@@ -7,9 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.squareup.picasso.Picasso;
 import androidx.fragment.app.Fragment;
 
 import org.json.JSONObject;
@@ -25,7 +26,7 @@ public class WeatherFragment extends Fragment {
     TextView updatedField;
     TextView detailsField;
     TextView currentTemperatureField;
-    TextView weatherIcon;
+    ImageView weatherIcon;
 
     Handler handler;
 
@@ -41,9 +42,8 @@ public class WeatherFragment extends Fragment {
         updatedField = (TextView)rootView.findViewById(R.id.updated_field);
         detailsField = (TextView)rootView.findViewById(R.id.details_field);
         currentTemperatureField = (TextView)rootView.findViewById(R.id.current_temperature_field);
-        weatherIcon = (TextView)rootView.findViewById(R.id.weather_icon);
+        weatherIcon = (ImageView)rootView.findViewById(R.id.weather_icon);
 
-        weatherIcon.setTypeface(weatherFont);
         return rootView;
     }
     @Override
@@ -128,7 +128,9 @@ public class WeatherFragment extends Fragment {
                     break;
             }
         }
-        weatherIcon.setText(icon);
+        Picasso.get()
+                .load(icon)
+                .into (weatherIcon);
     }
     public void changeCity(String city){
         updateWeatherData(city);
