@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.squareup.picasso.Picasso;
+
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import org.json.JSONObject;
@@ -33,6 +35,8 @@ public class WeatherFragment extends Fragment {
     public WeatherFragment(){
         handler = new Handler();
     }
+    private CityWeatherRecyclerAdapter adapter;
+    private CityWeatherSource cityWeatherSource;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +55,7 @@ public class WeatherFragment extends Fragment {
         super.onCreate(savedInstanceState);
         weatherFont = Typeface.createFromAsset(getActivity().getAssets(), "fonts/weather.ttf");
         updateWeatherData(new CityPreference(getActivity()).getCity());
+
     }
     private void updateWeatherData(final String city){
         new Thread(){
