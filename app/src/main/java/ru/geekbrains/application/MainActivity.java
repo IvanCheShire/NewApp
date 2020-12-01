@@ -5,12 +5,14 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -19,9 +21,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.InputType;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -47,6 +55,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     Dialog dialog;
     BroadcastReceiver myBroadcastReceiver = new MyBroadcastReceiver();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +73,18 @@ public class MainActivity extends AppCompatActivity {
         initNotificationChannel();
         initGetToken();
 
+        LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        String provider = locManager.getBestProvider(searchProviderCriteria, true);
+        Location loc = locManager.getLastKnownLocation(provider);
+        if (loc == null || (SystemClock.elapsedRealtime() - loc.getTime()) > timeOut) {
+            // We request another update Location
+            Log.d("SwA", "Request location");
+            locManager.requestSingleUpdate(provider, locListener, null);
+        }
+        else {
+            JSONSearchTask task = new JSONSearchTask();
+            task.execute(new Location[]{loc});
+        }
         dialog = new Dialog(MainActivity.this);
         dialog.setTitle("WARNING");
         dialog.setContentView(R.layout.activity_main);
@@ -83,6 +104,39 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+    }
+    private LocationListener locListener = new LocationListener() {
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            Log.d("SwA", "Location changed!");
+            String sLat =   "" + location.getLatitude();
+            String sLon =  "" + location.getLongitude();
+            Log.d("SwA", "Lat ["+sLat+"] - sLong ["+sLon+"]");
+
+            LocationManager locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locManager.removeUpdates(locListener);
+            JSONSearchTask task = new JSONSearchTask();
+            task.execute(new Location[]{location});
+        }
+    };
+    private static Criteria searchProviderCriteria = new Criteria();
+    static {
+        searchProviderCriteria.setPowerRequirement(Criteria.POWER_LOW);
+        searchProviderCriteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        searchProviderCriteria.setCostAllowed(false);
     }
     private void initNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
