@@ -1,0 +1,22 @@
+<resources>
+    <string name="change_city">Change city</string>
+    <string name="open_weather_maps_app_id">11111</string>
+
+    <string name="weather_sunny">https://cdn3.iconfinder.com/data/icons/tiny-weather-1/512/sun-512.png</string>
+    <string name="weather_clear_night">https://cdn3.iconfinder.com/data/icons/tiny-weather-1/512/moon-512.png</string>
+
+    <string name="weather_foggy">https://cdn4.iconfinder.com/data/icons/the-weather-is-nice-today/64/weather_30-512.png</string>
+    <string name="weather_cloudy">https://cdn2.iconfinder.com/data/icons/weather-color-2/500/weather-27-512.png</string>
+    <string name="weather_rainy">https://cdn2.iconfinder.com/data/icons/weather-color-2/500/weather-32-512.png</string>
+    <string name="weather_snowy">https://cdn3.iconfinder.com/data/icons/tiny-weather-1/512/snow-512.png</string>
+    <string name="weather_thunder">https://cdn3.iconfinder.com/data/icons/tiny-weather-1/512/flash-cloud-512.png</string>
+    <string name="weather_drizzle">https://cdn2.iconfinder.com/data/icons/weather-color-2/500/weather-30-512.png</string>
+
+    <string name="place_not_found">Sorry, no weather data found.</string>
+    <string name="app_name">Room</string>
+    <string name="action_settings">Settings</string>
+    <string name="add">Add</string>
+    <string name="delete">Delete</string>
+    <string name="update">Update</string>
+    <string name="remove">Remove</string>
+</resources>
